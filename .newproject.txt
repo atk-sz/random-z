@@ -1,0 +1,147 @@
+1. creat new app ref (https://reactnative.dev/docs/getting-started-without-a-framework)
+npx @react-native-community/cli@latest init AppName
+
+================================================================
+2 to run app
+2.1 (terminal1)
+npm start
+2.2 (terminal2)
+npm run android
+    or
+2.1 
+npx react-native run-android
+2.2 if new package is installed than before above command run below command
+npm start -- --reset-cache
+
+================================================================
+3. to show console.log()
+npx react-native log-android
+
+================================================================
+4. for navigation
+npm install @react-navigation/native @react-navigation/native-stack
+npm install react-native-screens react-native-safe-area-context
+
+================================================================
+5. to clear android cache
+cd android
+./gradlew clean
+or on cmd
+gradlew clean
+5.1 if clean fails run below command & then above commands
+rmdir /s /q %USERPROFILE%\.gradle\caches
+5.2 if it does't work still then run below command & then above commands (5) (very critical/danger command & '1>nul' use to hide naming of each file)
+del /f /s /q  %USERPROFILE%\.gradle
+del /f /s /q  %USERPROFILE%\AppData\Temp
+rmdir /s /q node_modules
+rmdir /s /q android\.gradle
+rmdir /s /q android\app\.cxx
+rmdir /s /q android\build
+rmdir /s /q android\app\build
+rmdir /s /q ios\build
+del /f /q yarn.lock package-lock.json
+npm cache clean --force
+
+npm install
+cd android
+./gradlew --refresh-dependencies
+./gradlew clean
+./gradlew assembleDebug
+
+5.3
+npx react-native start --reset-cache
+
+================================================================
+6. to add icons in any react native cli(will need to re-run the app)
+6.1 install package
+npm install react-native-vector-icons
+6.2 In android/app/build.gradle, add this inside apply from: "../../node_modules/react-native-vector-icons/fonts.gradle" at the bottom:
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+6.3 the use like below
+import Icon from 'react-native-vector-icons/MaterialIcons';
+<Icon name="home" size={30} color="#000" />
+
+================================================================
+7. Change the App Display Name (what shows on the phone)
+7.1 open below file
+android/app/src/main/res/values/strings.xml
+7.2 change app name
+<string name="app_name">Your New App Name</string>
+or more advance way
+7.1
+npx react-native-rename "Zxpense" -b com.newname.app
+7.3 rebuild app
+# Clean and rebuild Android
+cd android && ./gradlew clean && cd ..
+npx react-native run-android
+# Rebuild iOS
+cd ios && pod install && cd ..
+npx react-native run-ios
+
+================================================================
+8. if failed to bundle then follow below 
+rm -rf android/.gradle
+rm -rf android/app/build
+rm -rf node_modules
+rm -rf ios/build
+rm -rf android/build
+npm install
+
+================================================================
+9. to release
+9.1 debug mode apk, apk will be generated in android/app/build/outputs/apk/debug/app-debug.apk
+cd android
+./gradlew assembleDebug   # On macOS/Linux
+gradlew assembleDebug     # On Windows
+adb install android/app/build/outputs/apk/debug/app-debug.apk
+9.2 release mode apk, apk will be generated in android/app/build/outputs/apk/release/app-release.apk
+cd android
+./gradlew assembleRelease
+================================================================
+10. to add env variables
+10.1 add package
+npm i react-native-config
+10.2 create .env & add vars
+API_URL=https://myapi.com
+10.3 add below line in android/app/build.gradle at the bottom or just below other "apply"s
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+10.4 import & use in app
+import Config from "react-native-config";
+Config.API_URL; // 'https://myapi.com'
+if failed to load environment vars then refer
+https://www.npmjs.com/package/react-native-config
+---as both env package are unsafe for sensitive values always use BE to such values & below package does not require hard rebuild so makes the dev work easy------------------------------------------
+10 we can also use react-native-dotenv
+10.1 npm install react-native-dotenv
+10.2 in babel.config.js
+module.exports = {
+  ..other decs
+  plugins: [
+    [
+      "module:react-native-dotenv",
+      {
+        moduleName: "@env",
+        path: ".env",
+        blacklist: null,
+        whitelist: null,
+        safe: false,
+        allowUndefined: true
+      }
+    ]
+  ]
+};
+10.3 create .env & add required vars
+10.4 create declerations file for ease of use(optional)
+10.4.1 create a file env.d.ts
+10.4.2 in the file add below codes 
+declare module "@env" {
+  export const API_URL: string;
+  export const APP_ENV: string;
+}
+10.5 usage
+import { API_URL, APP_ENV } from "@env";
+
+console.log("API URL:", API_URL);
+console.log("App Environment:", APP_ENV);
+10.6 after all the above restart app with below command (important)
+npm start -- --reset-cache
