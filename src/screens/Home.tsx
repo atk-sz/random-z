@@ -9,9 +9,19 @@ type IHomeScreenProps = {
   navigation: NativeStackNavigationProp<IRootStackParamList, 'Home'>;
 };
 
-const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
-  const onClick = () => {
-    console.log('clicked');
+const HomeScreen: React.FC<IHomeScreenProps> = ({
+  navigation,
+}): React.JSX.Element => {
+  const gotoEasy = () => {
+    navigation.navigate('Easy');
+  };
+
+  const gotoHard = () => {
+    navigation.navigate('Hard');
+  };
+
+  const gotoFind = () => {
+    navigation.navigate('Find');
   };
 
   return (
@@ -26,13 +36,13 @@ const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
           </View>
           <View style={styles.btnsContainer}>
             <View style={styles.modeContainer}>
-              <TouchableOpacity style={styles.btn} onPress={onClick}>
+              <TouchableOpacity style={styles.btn} onPress={gotoEasy}>
                 <Text style={styles.btnText}>Easy</Text>
               </TouchableOpacity>
               <Text style={styles.helperTxt}>Shows history of guesses</Text>
             </View>
             <View style={styles.modeContainer}>
-              <TouchableOpacity style={styles.btn} onPress={onClick}>
+              <TouchableOpacity style={styles.btn} onPress={gotoHard}>
                 <Text style={styles.btnText}>Hard</Text>
               </TouchableOpacity>
               <Text style={styles.helperTxt}>
@@ -45,7 +55,7 @@ const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
           <View style={styles.calcHeaderContainer}>
             <Text style={styles.headerTxt}>Find Z</Text>
             <Text style={styles.titleTxt}>Find the value of Z</Text>
-            <TouchableOpacity style={styles.btnZ} onPress={onClick}>
+            <TouchableOpacity style={styles.btnZ} onPress={gotoFind}>
               <Text style={styles.btnZText}>Enter relative values</Text>
             </TouchableOpacity>
           </View>
