@@ -6,3 +6,9 @@ export type IRootStackParamList = {
   Find: undefined;
   Result: undefined;
 };
+
+export interface IFindZ {
+  a: string;
+  b: string;
+  c: string;
+}
