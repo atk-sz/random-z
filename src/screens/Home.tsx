@@ -16,21 +16,39 @@ const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
 
   return (
     <ScreenView>
-      <View style={styles.container}>
-        <Text style={styles.header}>Select difficulty</Text>
-      </View>
-      <View style={styles.btnsContainer}>
-        <View style={styles.modeContainer}>
-          <TouchableOpacity style={styles.btn} onPress={onClick}>
-            <Text style={styles.btnText}>Easy</Text>
-          </TouchableOpacity>
-          <Text style={styles.helperTxt}>Shows history of guesses</Text>
+      <View style={styles.homeContainer}>
+        <View style={styles.gameContainer}>
+          <View style={styles.gameHeaderContainer}>
+            <Text style={styles.headerTxt}>Guess Z</Text>
+            <Text style={styles.titleTxt}>
+              Select the difficulty of the game
+            </Text>
+          </View>
+          <View style={styles.btnsContainer}>
+            <View style={styles.modeContainer}>
+              <TouchableOpacity style={styles.btn} onPress={onClick}>
+                <Text style={styles.btnText}>Easy</Text>
+              </TouchableOpacity>
+              <Text style={styles.helperTxt}>Shows history of guesses</Text>
+            </View>
+            <View style={styles.modeContainer}>
+              <TouchableOpacity style={styles.btn} onPress={onClick}>
+                <Text style={styles.btnText}>Hard</Text>
+              </TouchableOpacity>
+              <Text style={styles.helperTxt}>
+                Doesn't show previous guesses
+              </Text>
+            </View>
+          </View>
         </View>
-        <View style={styles.modeContainer}>
-          <TouchableOpacity style={styles.btn} onPress={onClick}>
-            <Text style={styles.btnText}>Hard</Text>
-          </TouchableOpacity>
-          <Text style={styles.helperTxt}>Doesn't show previous guesses</Text>
+        <View style={styles.calcContainer}>
+          <View style={styles.calcHeaderContainer}>
+            <Text style={styles.headerTxt}>Find Z</Text>
+            <Text style={styles.titleTxt}>Find the value of Z</Text>
+            <TouchableOpacity style={styles.btnZ} onPress={onClick}>
+              <Text style={styles.btnZText}>Enter relative values</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </ScreenView>
@@ -38,17 +56,33 @@ const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
 };
 
 const styles = StyleSheet.create({
-  container: {
+  homeContainer: {
+    flex: 1,
+  },
+  gameContainer: {
+    height: '50%',
+  },
+  calcContainer: {
+    height: '50%',
+  },
+  gameHeaderContainer: {
     backgroundColor: theme.primary,
     padding: 16,
+    paddingBottom: 0,
   },
-  header: {
-    fontSize: 20,
+  headerTxt: {
+    fontSize: 30,
     fontWeight: 'bold',
     color: theme.text,
     marginBottom: 16,
     lineHeight: 28,
     textAlign: 'center',
+  },
+  titleTxt: {
+    color: theme.text,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    fontStyle: 'italic',
   },
   btnsContainer: {
     flexDirection: 'row',
@@ -77,6 +111,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     width: '70%',
     fontSize: 13,
+  },
+  calcHeaderContainer: {
+    alignItems: 'center',
+  },
+  btnZ: {
+    backgroundColor: theme.secondary,
+    margin: 5,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnZText: {
+    color: theme.text,
+    textTransform: 'uppercase',
+    fontSize: 20,
+    fontWeight: 'bold',
+    padding: 10,
   },
 });
 
