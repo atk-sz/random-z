@@ -19,13 +19,19 @@ const HomeScreen: React.FC<IHomeScreenProps> = (): React.JSX.Element => {
       <View style={styles.container}>
         <Text style={styles.header}>Select difficulty</Text>
       </View>
-      <View style={styles.btnContainer}>
-        <TouchableOpacity style={styles.btn} onPress={onClick}>
-          <Text style={styles.btnText}>Easy</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.btn} onPress={onClick}>
-          <Text style={styles.btnText}>Hard</Text>
-        </TouchableOpacity>
+      <View style={styles.btnsContainer}>
+        <View style={styles.modeContainer}>
+          <TouchableOpacity style={styles.btn} onPress={onClick}>
+            <Text style={styles.btnText}>Easy</Text>
+          </TouchableOpacity>
+          <Text style={styles.helperTxt}>Shows history of guesses</Text>
+        </View>
+        <View style={styles.modeContainer}>
+          <TouchableOpacity style={styles.btn} onPress={onClick}>
+            <Text style={styles.btnText}>Hard</Text>
+          </TouchableOpacity>
+          <Text style={styles.helperTxt}>Doesn't show previous guesses</Text>
+        </View>
       </View>
     </ScreenView>
   );
@@ -44,13 +50,20 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     textAlign: 'center',
   },
-  btnContainer: {
+  btnsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
+  },
+  modeContainer: {
+    alignItems: 'center',
   },
   btn: {
     backgroundColor: theme.secondary,
     margin: 10,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnText: {
     color: theme.text,
@@ -58,6 +71,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     padding: 10,
+  },
+  helperTxt: {
+    color: theme.lightGrey,
+    textAlign: 'center',
+    width: '70%',
+    fontSize: 13,
   },
 });
 
