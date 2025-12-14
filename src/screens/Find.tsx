@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { IFindZ, IRootStackParamList } from '../utils/interfaces';
@@ -39,18 +41,36 @@ const FindScreen: React.FC<IFindScreenProps> = (): React.JSX.Element => {
       return;
     }
 
+    // if starts with ".", convert to "0."
+    if (value.startsWith('.')) {
+      value = '0' + value;
+    }
+
+    // if starts with "-.", convert to "-0."
+    if (value.startsWith('-.')) {
+      value = '-0' + value.substring(1);
+    }
+
     // block +
     if (value.includes('+')) return;
 
     // block -0 then convert it to 0
     if (value === '-0') value = '0';
 
+    // Handle leading zero followed by non-decimal digit (e.g., "01" -> "1", "09" -> "9")
+    if (/^-?0\d/.test(value)) {
+      value = value.replace(/^(-?)0(\d)/, '$1$2');
+    }
+
     // count digits (exclude - and .)
     const digitCount = value.replace(/[-.]/g, '').length;
     if (digitCount > 7) return;
 
-    // final validation
-    const numberRegex = /^-?(0|[1-9]\d*)(\.\d+)?$/;
+    // block multiple decimal points
+    if ((value.match(/\./g) || []).length > 1) return;
+
+    // final validation - allow trailing decimal point for better UX
+    const numberRegex = /^-?(0|[1-9]\d*)(\.\d*)?$/;
     if (!numberRegex.test(value)) return;
 
     // Clear the error for this field when user starts typing
@@ -66,6 +86,9 @@ const FindScreen: React.FC<IFindScreenProps> = (): React.JSX.Element => {
   };
 
   const findZ = () => {
+    // Dismiss keyboard first
+    Keyboard.dismiss();
+
     // validate form
     const errors: Partial<Record<keyof IFindZ, string>> = {};
     if (!formValues.a) errors.a = 'A is required';
@@ -78,61 +101,80 @@ const FindScreen: React.FC<IFindScreenProps> = (): React.JSX.Element => {
     const B = Number(formValues.b);
     const C = Number(formValues.c);
     const res = (B * C) / A;
-    setResult(res.toString());
+
+    // Round to at most 7 decimal places and remove trailing zeros
+    const roundedRes = Math.round(res * 10000000) / 10000000;
+    setResult(roundedRes.toString());
+  };
+
+  const resetValues = () => {
+    setFormValues({ a: '', b: '', c: '' });
+    setFormErrors({});
+    setResult('');
   };
 
   return (
     <ScreenView>
-      <View style={styles.findContainer}>
-        <Text style={styles.headerText}>
-          Enter values of A, B & C to find Z
-        </Text>
-        <View style={styles.inputsContainer}>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>If A is</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter A"
-              value={formValues.a}
-              onChangeText={value => handleChange('a', value)}
-              maxLength={7}
-            />
-            <Text style={styles.errorText}>{formErrors.a ?? ' '}</Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <View style={styles.findContainer}>
+          <Text style={styles.headerText}>
+            Enter values of A, B & C to find Z
+          </Text>
+          <View style={styles.inputsContainer}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>If A is</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter A"
+                value={formValues.a}
+                onChangeText={value => handleChange('a', value)}
+                keyboardType="numeric"
+                maxLength={7}
+              />
+              <Text style={styles.errorText}>{formErrors.a ?? ' '}</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>then B is equal to</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter B"
+                value={formValues.b}
+                onChangeText={value => handleChange('b', value)}
+                keyboardType="numeric"
+                maxLength={7}
+              />
+              <Text style={styles.errorText}>{formErrors.b ?? ' '}</Text>
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>If C is</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter C"
+                value={formValues.c}
+                onChangeText={value => handleChange('c', value)}
+                keyboardType="numeric"
+                maxLength={7}
+              />
+              <Text style={styles.errorText}>{formErrors.c ?? ' '}</Text>
+            </View>
+            <View style={styles.btnContainer}>
+              <Text style={styles.inputLabel}>then Z is?</Text>
+              <TouchableOpacity
+                style={styles.btn}
+                onPress={result ? resetValues : findZ}
+              >
+                <Text style={styles.btnText}>
+                  {result ? 'Reset' : 'Find Z'}
+                </Text>
+              </TouchableOpacity>
+              <Text style={styles.errorText}>{''}</Text>
+            </View>
           </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>then B is equal to</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter B"
-              value={formValues.b}
-              onChangeText={value => handleChange('b', value)}
-              maxLength={7}
-            />
-            <Text style={styles.errorText}>{formErrors.b ?? ' '}</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.inputLabel}>If C is</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter C"
-              value={formValues.c}
-              onChangeText={value => handleChange('c', value)}
-              maxLength={7}
-            />
-            <Text style={styles.errorText}>{formErrors.c ?? ' '}</Text>
-          </View>
-          <View style={styles.btnContainer}>
-            <Text style={styles.inputLabel}>then Z is?</Text>
-            <TouchableOpacity style={styles.btn} onPress={findZ}>
-              <Text style={styles.btnText}>Click here</Text>
-            </TouchableOpacity>
-            <Text style={styles.errorText}>{''}</Text>
+          <View style={styles.resultContainer}>
+            <Text style={styles.resultText}>Z = {result ? result : '?'}</Text>
           </View>
         </View>
-        <View style={styles.resultContainer}>
-          <Text style={styles.resultText}>Z = {result ? result : '?'}</Text>
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     </ScreenView>
   );
 };
