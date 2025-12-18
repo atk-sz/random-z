@@ -1,9 +1,10 @@
 export type IRootStackParamList = {
   Dev: undefined;
   Home: undefined;
+  Find: undefined;
+  Levels: undefined;
   Easy: undefined;
   Hard: undefined;
-  Find: undefined;
   Result: undefined;
 };
 

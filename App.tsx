@@ -1,7 +1,13 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { IRootStackParamList } from './src/utils/interfaces';
-import { EasyScreen, FindScreen, HardScreen, HomeScreen } from './src/screens';
+import {
+  EasyScreen,
+  FindScreen,
+  HardScreen,
+  HomeScreen,
+  LevelsScreen,
+} from './src/screens';
 
 function App() {
   const Stack = createNativeStackNavigator<IRootStackParamList>();
@@ -16,6 +22,7 @@ function App() {
         <Stack.Screen name="Easy" component={EasyScreen} />
         <Stack.Screen name="Hard" component={HardScreen} />
         <Stack.Screen name="Find" component={FindScreen} />
+        <Stack.Screen name="Levels" component={LevelsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
